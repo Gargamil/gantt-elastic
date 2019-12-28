@@ -1,13 +1,16 @@
 const path = require('path');
-const { VueLoaderPlugin } = require('vue-loader');
+const {VueLoaderPlugin} = require('vue-loader');
+const webpack = require('webpack')
 
 module.exports = {
-  /*devServer: {
+  devServer: {
     publicPath: path.join(__dirname, 'dist'),
     compress: false,
     port: 9000,
+    inline: true,
+    writeToDisk: true,
     openPage: '/examples/vue.edit.html'
-  },*/
+  },
   devtool: 'inline-source-map',
   mode: 'development',
   entry: './src/GanttElastic.vue',

@@ -33,7 +33,7 @@
   "scripts": {
     "test": "npx cypress run --browser chrome",
     "build": "webpack",
-    "dev": "webpack --config webpack.dev.js --watch"
+    "dev": "webpack-dev-server --config webpack.dev.js --watch"
   },
   "repository": {
     "type": "git",
