@@ -19,7 +19,8 @@
         xmlns="http://www.w3.org/1999/xhtml"
         :style="{height:'100%'}"
       >
-        <div class="gantt-schedule-timeline-calendar__chart-timeline-items-row-item-resizer"
+        <div data-resize="1" ref="resizer"
+             class="gantt-schedule-timeline-calendar__chart-timeline-items-row-item-resizer"
              style="visibility: visible;"></div>
       </div>
 
@@ -30,9 +31,9 @@
 <style>
   .gantt-schedule-timeline-calendar__chart-timeline-items-row-item-resizer {
     touch-action: none;
-    width: 8px;
+    width: 20px;
     height: 100%;
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0);
     cursor: ew-resize;
     flex-shrink: 0;
     will-change: visibility;
@@ -43,7 +44,7 @@
   export default {
     name: 'ChartResizeTask',
     inject: ['root'],
-    props: ['task'],
+    props: ['task', ''],
     data() {
       return {};
     },

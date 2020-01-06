@@ -1098,7 +1098,6 @@
         this.calculateTaskListColumnsDimensions();
         this.fixScrollPos();
       },
-
       /**
        * Listen to specified event names
        */

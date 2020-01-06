@@ -9,7 +9,7 @@
 <template>
   <svg
     class="gantt-elastic__chart-row-text-wrapper"
-    :style="{ ...root.style['chart-row-text-wrapper'] }"
+    :style="{ ...root.style['chart-row-text-wrapper'], ...root.isMoveble(task)?{'cursor':'move'}:{'cursor':'inherit'} }"
     :x="task.x"
     :y="task.y - root.state.options.chart.grid.horizontal.gap"
     :width="getWidth"

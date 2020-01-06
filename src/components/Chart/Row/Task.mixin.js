@@ -73,7 +73,6 @@ export default {
       this.mousedown(ev);
     },
     mousedown(ev) {
-      console.log(ev);
       if (typeof ev.touches !== 'undefined') {
         this.mousePos.x = this.mousePos.lastX = ev.touches[0].screenX;
         this.mousePos.y = this.mousePos.lastY = ev.touches[0].screenY;
@@ -84,17 +83,16 @@ export default {
       }
       this.root.state.options.scroll.scrolling = false;
 
-      //if(ev.layerX)
-      //const isStart = ev.offsetX < 20;
-      //const isEnd = (this.task.width - ev.offsetX) < 20;
+      if (+ev.target.dataset.resize) {
+        this.task.isResize = true;
+      } else {
+        this.task.isScrolling = true;
+      }
 
-      //console.log(this.task.width, ev.offsetX);
-      //console.log(isStart, isEnd);
-
-      this.task.isScrolling = true;
     },
     mouseup(ev) {
       this.task.isScrolling = false;
+      this.task.isResize = false;
       this.task.start = this.root.pixelOffsetXToTime(this.task.x);
     },
     touchend(ev) {
@@ -104,9 +102,10 @@ export default {
       //this.mouseup(ev);
     },
     mousemove(ev) {
-      if (!this.task.isScrolling || !this.root.isMoveble(this.task)) {
+      if ((!this.task.isScrolling && !this.task.isResize) || !this.root.isMoveble(this.task)) {
         return;
       }
+
       this.root.state.options.scroll.scrolling = false;
       ev.preventDefault();
       ev.stopImmediatePropagation();
@@ -134,8 +133,11 @@ export default {
         x = this.task.x + movementX;// * this.root.state.options.scroll.dragXMoveMultiplier;
       }
 
-      this.task.x = x;
-      //console.log(this.root.pixelOffsetXToTime(this.task.x));
+      if (this.task.isResize) {
+        this.task.duration += parseInt((movementX) * (this.root.state.options.times.timePerPixel) - this.root.style['grid-line-vertical']['stroke-width']);
+      } else {
+        this.task.x = x;
+      }
     },
     touchmove(ev) {
       this.mousemove(ev);

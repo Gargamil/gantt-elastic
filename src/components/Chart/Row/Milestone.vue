@@ -43,7 +43,12 @@
     </foreignObject>-->
     <svg
       class="gantt-elastic__chart-row-bar gantt-elastic__chart-row-milestone"
-      :style="{ ...root.style['chart-row-bar'], ...root.style['chart-row-milestone'], ...task.style['chart-row-bar'] }"
+      :style="{
+      ...root.style['chart-row-bar'],
+      ...root.style['chart-row-milestone'],
+      ...task.style['chart-row-bar'],
+      ...root.isMoveble(task)?{'cursor':'move'}:{'cursor':'inherit'}
+      }"
       :x="task.x"
       :y="task.y"
       :width="task.width"
@@ -62,14 +67,14 @@
           ...root.style['chart-row-bar-polygon'],
           ...root.style['chart-row-milestone-polygon'],
           ...task.style['base'],
-          ...task.style['chart-row-bar-polygon']
+          ...task.style['chart-row-bar-polygon'],
         }"
         :points="getPoints"
       ></polygon>
       <progress-bar :task="task" :clip-path="'url(#' + clipPathId + ')'"></progress-bar>
     </svg>
     <chart-text :task="task" v-if="root.state.options.chart.text.display && task.showLabel"></chart-text>
-    <chart-resize-task :task="task" v-if="root.state.options.chart.text.display && task.showLabel"></chart-resize-task>
+    <!--<chart-resize-task :task="task" v-if="root.state.options.chart.text.display && task.showLabel"></chart-resize-task>-->
   </g>
 </template>
 
