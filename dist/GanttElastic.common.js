@@ -1,14 +1,5 @@
-(function webpackUniversalModuleDefinition(root, factory) {
-	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("Vue"));
-	else if(typeof define === 'function' && define.amd)
-		define(["Vue"], factory);
-	else if(typeof exports === 'object')
-		exports["GanttElastic"] = factory(require("Vue"));
-	else
-		root["GanttElastic"] = factory(root["Vue"]);
-})(window, function(__WEBPACK_EXTERNAL_MODULE__6__) {
-return /******/ (function(modules) { // webpackBootstrap
+module.exports =
+/******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 /******/
@@ -497,7 +488,7 @@ function applyToTag (styleElement, obj) {
 /* 6 */
 /***/ (function(module, exports) {
 
-module.exports = __WEBPACK_EXTERNAL_MODULE__6__;
+module.exports = require("Vue");
 
 /***/ }),
 /* 7 */
@@ -8335,5 +8326,4 @@ GanttElastic_component.options.__file = "src/GanttElastic.vue"
 
 /***/ })
 /******/ ])["default"];
-});
-//# sourceMappingURL=GanttElastic.umd.js.map
+//# sourceMappingURL=GanttElastic.common.js.map

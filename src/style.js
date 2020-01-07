@@ -59,8 +59,8 @@ export default function getStyle(fontSize = '12px', fontFamily = 'Arial, sans-se
       position: 'relative'
     },
     'calendar-row-rect-child--month': {},
-    'calendar-row-rect-child--day': { 'text-align': 'center' },
-    'calendar-row-rect-child--hour': { 'text-align': 'center' },
+    'calendar-row-rect-child--day': {'text-align': 'center'},
+    'calendar-row-rect-child--hour': {'text-align': 'center'},
     'calendar-row-text': {
       'font-family': fontFamily, // GanttElastic
       'font-size': fontSize, //GanttElastic
@@ -72,7 +72,7 @@ export default function getStyle(fontSize = '12px', fontFamily = 'Arial, sans-se
     'calendar-row-text--day': {},
     'calendar-row-text--hour': {},
     'task-list-wrapper': {},
-    'task-list': { background: 'transparent', 'border-color': '#eee' },
+    'task-list': {background: 'transparent', 'border-color': '#eee'},
     'task-list-header': {
       display: 'flex',
       'user-select': 'none',
@@ -152,7 +152,7 @@ export default function getStyle(fontSize = '12px', fontFamily = 'Arial, sans-se
       display: 'inline-flex',
       'vertical-align': 'center'
     },
-    'task-list-header-resizer': { margin: 'auto 0px' },
+    'task-list-header-resizer': {margin: 'auto 0px'},
     'task-list-header-resizer-dot': {
       width: '3px',
       height: '3px',
@@ -238,6 +238,15 @@ export default function getStyle(fontSize = '12px', fontFamily = 'Arial, sans-se
     },
     'chart-row-text-wrapper': {},
     'chart-row-text': {
+      background: 'inherit',
+      'border-radius': '10px',
+      'font-weight': 'normal',
+      color: '#ffffff',
+      height: '100%',
+      "font-size": "0.8em",
+      display: 'inline-block'
+    },
+    /*'chart-row-text': {
       background: '#ffffffa0',
       'border-radius': '10px',
       'font-family': fontFamily,
@@ -246,23 +255,31 @@ export default function getStyle(fontSize = '12px', fontFamily = 'Arial, sans-se
       color: '#000000a0',
       height: '100%',
       display: 'inline-block'
-    },
+    },*/
+
     'chart-row-text-content': {
       padding: '0px 6px'
     },
     'chart-row-text-content--text': {},
-    'chart-row-text-content--html': {},
+    'chart-row-text-content--html': {
+      color: 'inherit'
+    },
     'chart-row-wrapper': {},
     'chart-row-bar-wrapper': {},
     'chart-row-bar': {},
     'chart-row-bar-polygon': {
       stroke: '#E74C3C',
       'stroke-width': 1,
-      fill: '#F75C4C'
+      fill: '#F75C4C',
+      cursor: 'move'
     },
     'chart-row-project-wrapper': {},
     'chart-row-project': {},
-    'chart-row-project-polygon': {},
+    'chart-row-project-polygon': {
+      stroke: '#E74C3C',
+      'stroke-width': 1,
+      fill: '#f75c4c80'
+    },
     'chart-row-milestone-wrapper': {},
     'chart-row-milestone': {},
     'chart-row-milestone-polygon': {},

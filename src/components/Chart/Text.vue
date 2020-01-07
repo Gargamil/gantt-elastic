@@ -46,7 +46,11 @@
     </foreignObject>
   </svg>
 </template>
-
+<style>
+  .gantt-elastic__chart-row-text-content--html a {
+    color: inherit !important;
+  }
+</style>
 <script>
   export default {
     name: 'ChartText',

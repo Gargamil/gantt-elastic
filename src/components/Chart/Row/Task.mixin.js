@@ -91,9 +91,19 @@ export default {
 
     },
     mouseup(ev) {
+      if (!this.task.isScrolling && !this.task.isResize) {
+        return;
+      }
       this.task.isScrolling = false;
       this.task.isResize = false;
-      this.task.start = this.root.pixelOffsetXToTime(this.task.x);
+      const time = Math.round((this.root.pixelOffsetXToTime(this.task.x)));
+      const d = new Date(time);
+      d.setHours(0);
+      d.setMinutes(0);
+      d.setSeconds(0);
+      d.setMilliseconds(0);
+      this.task.start = +d;
+      this.task.x = this.root.timeToPixelOffsetX(this.task.start);
     },
     touchend(ev) {
       this.mouseup(ev);
@@ -136,6 +146,7 @@ export default {
       if (this.task.isResize) {
         this.task.duration += parseInt((movementX) * (this.root.state.options.times.timePerPixel) - this.root.style['grid-line-vertical']['stroke-width']);
       } else {
+
         this.task.x = x;
       }
     },
