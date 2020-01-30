@@ -73,7 +73,8 @@
       ></polygon>
       <progress-bar :task="task" :clip-path="'url(#' + clipPathId + ')'"></progress-bar>
     </svg>
-    <chart-text :task="task" v-if="root.state.options.chart.text.display && task.showLabel"></chart-text>
+    <chart-text :task="task"
+                v-if="root.state.options.chart.text.display && task.showLabel && root.isTaskVisible(task)"></chart-text>
     <!--<chart-resize-task :task="task" v-if="root.state.options.chart.text.display && task.showLabel"></chart-resize-task>-->
   </g>
 </template>
@@ -98,6 +99,8 @@
     mixins: [taskMixin],
     data() {
       return {};
+    },
+    created() {
     },
     computed: {
       /**

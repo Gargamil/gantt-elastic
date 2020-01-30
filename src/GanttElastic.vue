@@ -1418,7 +1418,7 @@
           task.width = 0;
         }
         task.height = this.state.options.row.height;
-        task.x = this.timeToPixelOffsetX(task.startTime);
+        task.x = task.startTime ? this.timeToPixelOffsetX(task.startTime) : 0;
         task.y =
           (this.state.options.row.height + this.state.options.chart.grid.horizontal.gap * 2) * index +
           this.state.options.chart.grid.horizontal.gap;
