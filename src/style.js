@@ -244,7 +244,7 @@ export default function getStyle(fontSize = '12px', fontFamily = 'Arial, sans-se
       color: '#ffffff',
       height: '100%',
       "font-size": "0.8em",
-      display: 'inline-block'
+      /*display: 'inline-block'*/
     },
     /*'chart-row-text': {
       background: '#ffffffa0',
@@ -258,7 +258,8 @@ export default function getStyle(fontSize = '12px', fontFamily = 'Arial, sans-se
     },*/
 
     'chart-row-text-content': {
-      padding: '0px 6px'
+      padding: '0px 6px',
+      'text-shadow': "0px 0px 10px #ff0000"
     },
     'chart-row-text-content--text': {},
     'chart-row-text-content--html': {

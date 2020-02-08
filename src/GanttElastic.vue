@@ -591,7 +591,6 @@
             ...task,
             id: task[options.taskMapping.id],
             start: task[options.taskMapping.start],
-            label: task[options.taskMapping.label],
             duration: task[options.taskMapping.duration],
             progress: task[options.taskMapping.progress],
             type: task[options.taskMapping.type],

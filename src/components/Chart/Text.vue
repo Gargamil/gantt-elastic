@@ -11,7 +11,7 @@
     class="gantt-elastic__chart-row-text-wrapper"
     :style="{ ...root.style['chart-row-text-wrapper'], ...root.isMoveble(task)?{'cursor':'move'}:{'cursor':'inherit'} }"
     :x="task.x"
-    :y="task.y - root.state.options.chart.grid.horizontal.gap"
+    :y="task.y "
     :width="getWidth"
     :height="getHeight"
   >
@@ -30,7 +30,7 @@
           }"
           v-if="!html"
         >
-          <div>{{ task.label }}</div>
+          <div>{{ task.timelinelabel }}</div>
         </div>
         <div
           class="gantt-elastic__chart-row-text-content gantt-elastic__chart-row-text-content--html"
@@ -40,7 +40,7 @@
             ...contentStyle
           }"
           v-if="html"
-          v-html="task.label"
+          v-html="task.timelinelabel"
         ></div>
       </div>
     </foreignObject>
@@ -68,7 +68,7 @@
       getWidth() {
         const textStyle = this.root.style['chart-row-text'];
         this.root.state.ctx.font = `${textStyle['font-weight']} ${textStyle['font-size']} ${textStyle['font-family']}`;
-        const textWidth = (this.root.state.ctx.measureText(this.task.label).width * 2);
+        const textWidth = (this.root.state.ctx.measureText(this.task.timelinelabel).width * 2);
         return textWidth + this.root.state.options.chart.text.xPadding * 2;
       },
 
@@ -78,7 +78,7 @@
        * @returns {number}
        */
       getHeight() {
-        return this.task.height + this.root.state.options.chart.grid.horizontal.gap * 2;
+        return this.task.height// + this.root.state.options.chart.grid.horizontal.gap * 2;
       },
 
       /**
