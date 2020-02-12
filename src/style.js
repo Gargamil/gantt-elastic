@@ -259,7 +259,7 @@ export default function getStyle(fontSize = '12px', fontFamily = 'Arial, sans-se
 
     'chart-row-text-content': {
       padding: '0px 6px',
-      'text-shadow': "0px 0px 10px #ff0000"
+      'text-shadow': "0px 0px 10px #9d9d9d"
     },
     'chart-row-text-content--text': {},
     'chart-row-text-content--html': {
