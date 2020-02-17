@@ -15,14 +15,14 @@
 </template>
 
 <script>
-  import VueInstance from 'vue';
+  //import VueInstance from 'vue';
   import dayjs from 'dayjs';
   import MainView from './components/MainView.vue';
   import getStyle from './style.js';
   import ResizeObserver from 'resize-observer-polyfill';
 
   const ctx = document.createElement('canvas').getContext('2d');
-  let VueInst = VueInstance;
+  //let VueInst = VueInstance;
 
   function initVue() {
     if (typeof Vue !== 'undefined' && typeof VueInst === 'undefined') {
@@ -30,7 +30,7 @@
     }
   }
 
-  initVue();
+  //initVue();
 
   let hourWidthCache = null;
 

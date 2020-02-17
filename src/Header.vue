@@ -7,21 +7,21 @@
  */
 -->
 <template>
-  <div class="gantt-elastic__header" :style="{ ...style['header'] }">
+  <div class="gantt-elastic__header" :style="style['header']">
     <div
       class="gantt-elastic__header-title"
-      :style="{ ...style['header-title'] }"
+      :style="style['header-title']"
     >
       <div
         class="gantt-elastic__header-title--text"
-        :style="{ ...style['header-title--text'] }"
+        :style="style['header-title--text']"
         v-if="!opts.title.html && opts.title.label"
       >
         {{ opts.title.label }}
       </div>
       <div
         class="gantt-elastic__header-title--html"
-        :style="{ ...style['header-title--html'] }"
+        :style="style['header-title--html']"
         v-if="opts.title.html"
         v-html="opts.title.label"
       >
@@ -30,30 +30,30 @@
     </div>
     <div
       class="gantt-elastic__header-options"
-      :style="{ ...style['header-options'] }"
+      :style="style['header-options']"
     >
       <button
         class="gantt-elastic__header-btn-recenter"
-        :style="{ ...style['header-btn-recenter'] }"
+        :style="style['header-btn-recenter']"
         @click.prevent="recenterPosition"
       >
         {{ opts.locale.Now }}
       </button>
       <label
         class="gantt-elastic__header-label"
-        :style="{ ...style['header-label'] }"
+        :style="style['header-label']"
       >
         {{ opts.locale["X-Scale"] }}
         <div
           class="gantt-elastic__header-slider-wrapper"
-          :style="{ ...style['header-slider-wrapper'] }"
+          :style="style['header-slider-wrapper']"
         >
           <vue-slider
             class="gantt-elastic__header-slider"
             tooltip="none"
-            :style="{ ...style['header-slider'] }"
-            :process-style="{ ...style['header-slider--process'] }"
-            :slider-style="{ ...style['header-slider--slider'] }"
+            :style="style['header-slider']"
+            :process-style="style['header-slider--process']"
+            :slider-style="style['header-slider--slider']"
             v-model="scale"
             :max="24"
             :min="2"
@@ -63,19 +63,19 @@
       </label>
       <label
         class="gantt-elastic__header-label"
-        :style="{ ...style['header-label'] }"
+        :style="style['header-label']"
       >
         {{ opts.locale["Y-Scale"] }}
         <div
           class="gantt-elastic__header-slider-wrapper"
-          :style="{ ...style['header-slider-wrapper'] }"
+          :style="style['header-slider-wrapper']"
         >
           <vue-slider
             class="gantt-elastic__header-slider"
             tooltip="none"
-            :style="{ ...style['header-slider'] }"
-            :process-style="{ ...style['header-slider--process'] }"
-            :slider-style="{ ...style['header-slider--slider'] }"
+            :style="style['header-slider']"
+            :process-style="style['header-slider--process']"
+            :slider-style="style['header-slider--slider']"
             v-model="height"
             :max="100"
             :min="7"
@@ -83,7 +83,7 @@
           ></vue-slider>
         </div>
       </label>
-      <label
+      <!--<label
         class="gantt-elastic__header-label"
         :style="{ ...style['header-label'] }"
       >
@@ -104,22 +104,22 @@
             width="100px"
           ></vue-slider>
         </div>
-      </label>
-      <label
+      </label>-->
+      <!--<label
         class="gantt-elastic__header-label"
-        :style="{ ...style['header-label'] }"
+        :style="style['header-label']"
       >
         {{ opts.locale["Task list width"] }}
         <div
           class="gantt-elastic__header-slider-wrapper"
-          :style="{ ...style['header-slider-wrapper'] }"
+          :style="style['header-slider-wrapper']"
         >
           <vue-slider
             class="gantt-elastic__header-slider"
             tooltip="none"
-            :style="{ ...style['header-slider'] }"
-            :process-style="{ ...style['header-slider--process'] }"
-            :slider-style="{ ...style['header-slider--slider'] }"
+            :style="style['header-slider']"
+            :process-style="style['header-slider--process']"
+            :slider-style="style['header-slider--slider']"
             v-model="divider"
             :max="100"
             :min="0"
@@ -127,13 +127,14 @@
           ></vue-slider>
         </div>
       </label>
+      -->
       <label
         class="gantt-elastic__header-task-list-switch--wrapper"
-        :style="{ ...style['header-task-list-switch--label'] }"
+        :style="style['header-task-list-switch--label']"
       >
         <switches
           class="gantt-elastic__header-task-list-switch"
-          :style="{ ...style['header-task-list-switch'] }"
+          :style="style['header-task-list-switch']"
           v-model="root.state.options.taskList.display"
         ></switches>
         {{ opts.locale["Display task list"] }}
