@@ -9,7 +9,10 @@
 <template>
   <div class="gantt-elastic" style="width:100%">
     <slot name="header"></slot>
-    <main-view ref="mainView"></main-view>
+    <main-view v-if="tasks && tasks.length>0" ref="mainView"></main-view>
+    <template v-else>
+      <slot name="nodata"></slot>
+    </template>
     <slot name="footer"></slot>
   </div>
 </template>
@@ -22,6 +25,7 @@
   import ResizeObserver from 'resize-observer-polyfill';
 
   const ctx = document.createElement('canvas').getContext('2d');
+
   //let VueInst = VueInstance;
 
   function initVue() {
