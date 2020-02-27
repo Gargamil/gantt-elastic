@@ -61,18 +61,20 @@ export default {
      * @param {Event} event
      */
     emitEvent(eventName, event) {
-      if (this[eventName]) {
+      /*if (this[eventName]) {
         this[eventName](event);
-      }
+      }*/
 
       if (!this.root.state.options.scroll.scrolling) {
         this.root.$emit(`chart-${this.task.type}-${eventName}`, {event, data: this.task});
       }
     },
     touchstart(ev) {
+      return;
       this.mousedown(ev);
     },
     mousedown(ev) {
+      return;
       if (typeof ev.touches !== 'undefined') {
         this.mousePos.x = this.mousePos.lastX = ev.touches[0].screenX;
         this.mousePos.y = this.mousePos.lastY = ev.touches[0].screenY;
@@ -91,6 +93,7 @@ export default {
 
     },
     mouseup(ev) {
+      return;
       if (!this.task.isScrolling && !this.task.isResize) {
         return;
       }
@@ -113,14 +116,15 @@ export default {
       //this.mouseup(ev);
     },
     mousemove(ev) {
+      return;
       if ((!this.task.isScrolling && !this.task.isResize) || !this.root.isMoveble(this.task)) {
         return;
       }
 
       this.root.state.options.scroll.scrolling = false;
-      ev.preventDefault();
-      ev.stopImmediatePropagation();
-      ev.stopPropagation();
+      //ev.preventDefault();
+      //ev.stopImmediatePropagation();
+      //ev.stopPropagation();
       const touch = typeof ev.touches !== 'undefined';
       let movementX, movementY;
       if (touch) {
@@ -155,10 +159,10 @@ export default {
       this.mousemove(ev);
     }
   },
-  mounted() {
-    document.addEventListener('mouseup', this.mouseup.bind(this));
+  created() {
+    /*document.addEventListener('mouseup', this.mouseup.bind(this));
     document.addEventListener('mousemove', this.mousemove.bind(this));
     document.addEventListener('touchmove', this.mousemove.bind(this));
-    document.addEventListener('touchend', this.mouseup.bind(this));
+    document.addEventListener('touchend', this.mouseup.bind(this));*/
   }
 };

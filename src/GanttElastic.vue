@@ -803,7 +803,8 @@
       },
 
       isMoveble(task) {
-        return task.parentId && task.parentId >= 0;
+        return false;
+        //return task.parentId && task.parentId >= 0;
       },
 
       /**
