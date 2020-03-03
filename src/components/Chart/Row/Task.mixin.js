@@ -64,9 +64,10 @@ export default {
       /*if (this[eventName]) {
         this[eventName](event);
       }*/
+      this.root.$emit(`chart-${this.task.type}-${eventName}`, {event, data: this.task});
 
       if (!this.root.state.options.scroll.scrolling) {
-        this.root.$emit(`chart-${this.task.type}-${eventName}`, {event, data: this.task});
+        //this.root.$emit(`chart-${this.task.type}-${eventName}`, {event, data: this.task});
       }
     },
     touchstart(ev) {
@@ -156,6 +157,7 @@ export default {
       }
     },
     touchmove(ev) {
+      return;
       this.mousemove(ev);
     }
   },
