@@ -64,13 +64,13 @@ export default {
       /*if (this[eventName]) {
         this[eventName](event);
       }*/
-      this.root.$emit(`chart-${this.task.type}-${eventName}`, {event, data: this.task});
-
+      //this.root.$emit(`chart-${this.task.type}-${eventName}`, {event, data: this.task});
+      //console.log(eventName);
       if (!this.root.state.options.scroll.scrolling) {
-        //this.root.$emit(`chart-${this.task.type}-${eventName}`, {event, data: this.task});
+        this.root.$emit(`chart-${this.task.type}-${eventName}`, {event, data: this.task});
       }
     },
-    touchstart(ev) {
+    /*touchstart(ev) {
       return;
       this.mousedown(ev);
     },
@@ -159,7 +159,7 @@ export default {
     touchmove(ev) {
       return;
       this.mousemove(ev);
-    }
+    }*/
   },
   created() {
     /*document.addEventListener('mouseup', this.mouseup.bind(this));
