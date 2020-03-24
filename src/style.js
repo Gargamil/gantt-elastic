@@ -201,7 +201,8 @@ export default function getStyle(fontSize = '12px', fontFamily = 'Arial, sans-se
       'word-break': 'keep-all',
       'white-space': 'nowrap',
       color: '#606060',
-      background: '#FFFFFF'
+      background: '#FFFFFF',
+      cursor: 'pointer'
     },
     'grid-lines': {},
     'grid-line-horizontal': {
