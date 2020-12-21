@@ -4,6 +4,7 @@
  * @author Rafal Pospiech <neuronet.io@gmail.com>
  * @package GanttElastic
  */
+import {console} from "vuedraggable/src/util/helper";
 
 export default {
   data() {
@@ -19,8 +20,9 @@ export default {
         positiveX: 0,
         positiveY: 0,
         currentX: 0,
-        currentY: 0
-      }
+        currentY: 0,
+        offsetX: 0
+      },
     };
   },
   computed: {
@@ -61,21 +63,22 @@ export default {
      * @param {Event} event
      */
     emitEvent(eventName, event) {
-      /*if (this[eventName]) {
+      if (this[eventName]) {
         this[eventName](event);
-      }*/
+      }
+
+
       //this.root.$emit(`chart-${this.task.type}-${eventName}`, {event, data: this.task});
-      //console.log(eventName);
-      if (!this.root.state.options.scroll.scrolling) {
+      if (!this.root.state.options.movingTask) {
         this.root.$emit(`chart-${this.task.type}-${eventName}`, {event, data: this.task});
       }
     },
-    /*touchstart(ev) {
-      return;
+    touchstart(ev) {
+      //return;
       this.mousedown(ev);
     },
     mousedown(ev) {
-      return;
+      //return;
       if (typeof ev.touches !== 'undefined') {
         this.mousePos.x = this.mousePos.lastX = ev.touches[0].screenX;
         this.mousePos.y = this.mousePos.lastY = ev.touches[0].screenY;
@@ -84,45 +87,106 @@ export default {
         this.mousePos.currentX = this.task.x;
         this.mousePos.currentY = this.task.y;
       }
-      this.root.state.options.scroll.scrolling = false;
 
-      if (+ev.target.dataset.resize) {
+      if(!this.root.isMoveble(this.task)){
+        return;
+      }
+
+      this.root.state.options.scroll.scrolling = false;
+      this.root.state.options.movingTask = true;
+
+      this.task.isScrolling = true;
+      this.offsetX = ev.layerX - this.task.x;
+      this.root.state.options.movingData.offset = ev.layerX - this.task.x;
+      /*if (+ev.target.dataset.resize) {
         this.task.isResize = true;
       } else {
         this.task.isScrolling = true;
-      }
+      }*/
 
     },
     mouseup(ev) {
-      return;
-      if (!this.task.isScrolling && !this.task.isResize) {
+      //return;
+      if (!this.root.state.options.movingTask) {
         return;
       }
+
+      ev.preventDefault();
+      ev.stopImmediatePropagation();
+      ev.stopPropagation();
+
+      this.root.state.options.movingTask = false;
+      this.root.state.options.movingData.offset = 0;
+
       this.task.isScrolling = false;
       this.task.isResize = false;
       const oldTime = new Date(this.task.start);
-      const time = Math.round((this.root.pixelOffsetXToTime(this.task.x)));
+
+      const time = Math.round((this.root.pixelOffsetXToTime(this.task.x + (this.task.width / 2))));
       const newTime = new Date(time);
       newTime.setHours(oldTime.getHours());
       newTime.setMinutes(oldTime.getMinutes());
       newTime.setSeconds(oldTime.getSeconds());
       newTime.setMilliseconds(0);
-      this.task.start = +newTime;
-      this.task.x = this.root.timeToPixelOffsetX(this.task.start);
+      this.task.start = newTime;
+
+      if (+newTime < +oldTime) {
+        const diff = +oldTime - +newTime
+        this.task.end = new Date(+this.task.end - diff);
+      } else {
+        const diff = +newTime - +oldTime
+        this.task.end = new Date(+this.task.end + diff);
+      }
+
+
+      const newx = this.root.timeToPixelOffsetX(this.task.start);
+      if (this.task.x !== newx) {
+        this.task.x = newx;
+        this.task.changedX = true;
+        this.root.$emit(`task-changed-start`, this.task);
+      } else {
+        this.task.changedX = false;
+      }
     },
     touchend(ev) {
-      this.mouseup(ev);
-    },
-    mouseout(ev) {
       //this.mouseup(ev);
     },
-    mousemove(ev) {
-      return;
-      if ((!this.task.isScrolling && !this.task.isResize) || !this.root.isMoveble(this.task)) {
+    mouseout(ev) {
+
+      if (
+        (!this.task.isScrolling && !this.task.isResize) ||
+        !this.root.isMoveble(this.task) ||
+        !this.root.state.options.movingTask
+      ) {
         return;
       }
 
-      this.root.state.options.scroll.scrolling = false;
+      ev.preventDefault();
+      ev.stopImmediatePropagation();
+      ev.stopPropagation();
+
+      this.offsetX = this.root.state.options.movingData.offset;//ev.layerX - this.task.x;
+    },
+    mousemove(ev) {
+
+      if (
+        (!this.task.isScrolling && !this.task.isResize) ||
+        !this.root.isMoveble(this.task) ||
+        !this.root.state.options.movingTask
+      ) {
+        return;
+      }
+
+      ev.preventDefault();
+      ev.stopImmediatePropagation();
+      ev.stopPropagation();
+
+      this.offsetX = this.root.state.options.movingData.offset;
+      this.task.x = ev.layerX - (this.offsetX | 0);
+
+      //console.log(`taskx: ${this.task.x}, offsetx: ${this.offsetX}`)
+      //console.log(ev);
+      return ev;
       //ev.preventDefault();
       //ev.stopImmediatePropagation();
       //ev.stopPropagation();
@@ -139,32 +203,34 @@ export default {
         movementX = ev.movementX;
         movementY = ev.movementY;
       }
-      //const horizontal = this.$refs.chartScrollContainerHorizontal;
-      //const vertical = this.$refs.chartScrollContainerVertical;
+
+      //console.log(movementX);
+      //console.log(this.mousePos)
+      const horizontal = this.$refs.chartScrollContainerHorizontal;
+
       let x = 0,
         y = 0;
       if (touch) {
         x = this.mousePos.currentX - movementX;// * this.root.state.options.scroll.dragXMoveMultiplier;
       } else {
-        x = this.task.x + movementX;// * this.root.state.options.scroll.dragXMoveMultiplier;
+        x = this.task.x + movementX;
       }
 
       if (this.task.isResize) {
         this.task.duration += parseInt((movementX) * (this.root.state.options.times.timePerPixel) - this.root.style['grid-line-vertical']['stroke-width']);
       } else {
-
         this.task.x = x;
       }
     },
     touchmove(ev) {
-      return;
+      //return;
       this.mousemove(ev);
-    }*/
+    }
   },
   created() {
-    /*document.addEventListener('mouseup', this.mouseup.bind(this));
+    document.addEventListener('mouseup', this.mouseup.bind(this));
     document.addEventListener('mousemove', this.mousemove.bind(this));
     document.addEventListener('touchmove', this.mousemove.bind(this));
-    document.addEventListener('touchend', this.mouseup.bind(this));*/
+    document.addEventListener('touchend', this.mouseup.bind(this));
   }
 };

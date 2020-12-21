@@ -145,7 +145,6 @@
 
 <script>
   import vueSlider from "vue-slider-component";
-  import "vue-slider-component/theme/default.css";
   import Switches from "vue-switches";
 
   const defaultStyle = {
