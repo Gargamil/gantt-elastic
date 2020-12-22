@@ -88,13 +88,12 @@ export default {
         this.mousePos.currentY = this.task.y;
       }
 
-      if(!this.root.isMoveble(this.task)){
+      if (!this.root.isMoveble(this.task)) {
         return;
       }
 
       this.root.state.options.scroll.scrolling = false;
       this.root.state.options.movingTask = true;
-
       this.task.isScrolling = true;
       this.offsetX = ev.layerX - this.task.x;
       this.root.state.options.movingData.offset = ev.layerX - this.task.x;
@@ -107,7 +106,7 @@ export default {
     },
     mouseup(ev) {
       //return;
-      if (!this.root.state.options.movingTask) {
+      if (!this.root.state.options.movingTask || !this.task.isScrolling) {
         return;
       }
 
@@ -116,31 +115,36 @@ export default {
       ev.stopPropagation();
 
       this.root.state.options.movingTask = false;
+      this.root.state.options.scroll.scrolling = false;
       this.root.state.options.movingData.offset = 0;
 
       this.task.isScrolling = false;
       this.task.isResize = false;
       const oldTime = new Date(this.task.start);
 
-      const time = Math.round((this.root.pixelOffsetXToTime(this.task.x + (this.task.width / 2))));
+      const pixelToCaclulateTime = this.task.fullDay ? this.task.x + (this.task.width / 2) : this.task.x;
+      const time = Math.round((this.root.pixelOffsetXToTime(pixelToCaclulateTime)));
       const newTime = new Date(time);
-      newTime.setHours(oldTime.getHours());
-      newTime.setMinutes(oldTime.getMinutes());
-      newTime.setSeconds(oldTime.getSeconds());
-      newTime.setMilliseconds(0);
-      this.task.start = newTime;
 
-      if (+newTime < +oldTime) {
-        const diff = +oldTime - +newTime
-        this.task.end = new Date(+this.task.end - diff);
-      } else {
-        const diff = +newTime - +oldTime
-        this.task.end = new Date(+this.task.end + diff);
+      if (!this.task.changedX) {
+        return; // no change
       }
 
+      this.task.start = newTime;
 
+      if (this.task.fullDay) {
+        this.task.start.setHours(0, 0, 0, 0);
+        this.task.end = new Date(this.task.start);
+        this.task.end.setHours(23, 59, 59, 59);
+      } else {
+        this.task.end = new Date(+this.task.start + this.task.duration);
+      }
+
+      this.task.end = this.task.end.toISOString()
       const newx = this.root.timeToPixelOffsetX(this.task.start);
-      if (this.task.x !== newx) {
+      this.task.start = newTime.toISOString()
+
+      if (this.task.changedX) {
         this.task.x = newx;
         this.task.changedX = true;
         this.root.$emit(`task-changed-start`, this.task);
@@ -161,6 +165,8 @@ export default {
         return;
       }
 
+      this.root.state.options.scroll.scrolling = false;
+
       ev.preventDefault();
       ev.stopImmediatePropagation();
       ev.stopPropagation();
@@ -168,9 +174,8 @@ export default {
       this.offsetX = this.root.state.options.movingData.offset;//ev.layerX - this.task.x;
     },
     mousemove(ev) {
-
       if (
-        (!this.task.isScrolling && !this.task.isResize) ||
+        (!this.task.isScrolling) ||
         !this.root.isMoveble(this.task) ||
         !this.root.state.options.movingTask
       ) {
@@ -182,7 +187,12 @@ export default {
       ev.stopPropagation();
 
       this.offsetX = this.root.state.options.movingData.offset;
-      this.task.x = ev.layerX - (this.offsetX | 0);
+      const newx = ev.layerX - (this.offsetX | 0);
+
+      if (Math.abs(newx - this.task.x) >= 1) {
+        this.task.x = newx;
+        this.task.changedX = true;
+      }
 
       //console.log(`taskx: ${this.task.x}, offsetx: ${this.offsetX}`)
       //console.log(ev);

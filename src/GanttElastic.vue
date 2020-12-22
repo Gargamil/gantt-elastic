@@ -987,6 +987,9 @@ const GanttElastic = {
      * @param {int} time
      */
     scrollToTime(time) {
+      if (!this.state.refs.chartContainer) {
+        return;
+      }
       let pos = this.timeToPixelOffsetX(time);
       const chartContainerWidth = this.state.refs.chartContainer.clientWidth;
       pos = pos - chartContainerWidth / 2;
