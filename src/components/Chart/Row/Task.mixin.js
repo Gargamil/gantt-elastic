@@ -88,6 +88,10 @@ export default {
         this.mousePos.currentY = this.task.y;
       }
 
+      if (ev.button !== 0) {
+        return
+      }
+
       if (!this.root.isMoveble(this.task)) {
         return;
       }

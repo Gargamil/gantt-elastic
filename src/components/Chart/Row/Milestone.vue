@@ -25,6 +25,7 @@
     @touchstart="emitEvent('touchstart', $event)"
     @touchmove="emitEvent('touchmove', $event)"
     @touchend="emitEvent('touchend', $event)"
+    @contextmenu.prevent="emitEvent('contextmenu',$event)"
   >
     <!--<foreignObject
       class="gantt-elastic__chart-expander gantt-elastic__chart-expander--milestone"
@@ -80,57 +81,57 @@
 </template>
 
 <script>
-  import ChartText from '../Text.vue';
-  import ProgressBar from '../ProgressBar.vue';
-  import Expander from '../../Expander.vue';
-  import taskMixin from './Task.mixin.js';
-  import ChartResizeTask from "../Resize.vue";
+import ChartText from '../Text.vue';
+import ProgressBar from '../ProgressBar.vue';
+import Expander from '../../Expander.vue';
+import taskMixin from './Task.mixin.js';
+import ChartResizeTask from "../Resize.vue";
 
-  export default {
-    name: 'Milestone',
-    components: {
-      ChartResizeTask,
-      ChartText,
-      ProgressBar,
-      Expander
+export default {
+  name: 'Milestone',
+  components: {
+    ChartResizeTask,
+    ChartText,
+    ProgressBar,
+    Expander
+  },
+  inject: ['root'],
+  props: ['task'],
+  mixins: [taskMixin],
+  data() {
+    return {};
+  },
+  created() {
+  },
+  computed: {
+    /**
+     * Get clip path id
+     *
+     * @returns {string}
+     */
+    clipPathId() {
+      return 'gantt-elastic__milestone-clip-path-' + this.task.id;
     },
-    inject: ['root'],
-    props: ['task'],
-    mixins: [taskMixin],
-    data() {
-      return {};
-    },
-    created() {
-    },
-    computed: {
-      /**
-       * Get clip path id
-       *
-       * @returns {string}
-       */
-      clipPathId() {
-        return 'gantt-elastic__milestone-clip-path-' + this.task.id;
-      },
 
-      /**
-       * Get points
-       *
-       * @returns {string}
-       */
-      getPoints() {
-        const task = this.task;
-        const fifty = task.height / 2;
-        let offset = fifty;
-        if (task.width / 2 - offset < 0) {
-          offset = task.width / 2;
-        }
-        return `0,${fifty}
+    /**
+     * Get points
+     *
+     * @returns {string}
+     */
+    getPoints() {
+      const task = this.task;
+      const fifty = task.height / 2;
+      let offset = fifty;
+      if (task.width / 2 - offset < 0) {
+        offset = task.width / 2;
+      }
+      return `0,${fifty}
         ${offset},0
         ${task.width - offset},0
         ${task.width},${fifty}
         ${task.width - offset},${task.height}
         ${offset},${task.height}`;
-      }
     }
-  };
+  }
+};
 </script>

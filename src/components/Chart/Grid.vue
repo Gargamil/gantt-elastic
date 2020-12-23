@@ -119,6 +119,7 @@ export default {
       let lines = [];
       const state = this.root.state.options;
       let tasks = this.root.visibleTasks;
+
       for (let index = 0, len = tasks.length; index <= len; index++) {
         const y =
           index * (state.row.height + state.chart.grid.horizontal.gap * 2) +

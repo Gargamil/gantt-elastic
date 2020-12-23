@@ -903,6 +903,15 @@ const GanttElastic = {
       return visibleTasks.length * this.getTaskHeight();
     },
 
+
+    getTaskByY(y){
+      const height = this.getTaskHeight()
+
+      const taskIdx = Math.floor(+y/height);
+
+      return this.visibleTasks[taskIdx];
+    },
+
     /**
      * Convert time (in milliseconds) to pixel offset inside chart
      *
