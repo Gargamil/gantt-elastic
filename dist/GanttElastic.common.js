@@ -115,7 +115,7 @@ if(false) {}
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(11);
+var content = __webpack_require__(12);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -488,7 +488,27 @@ function applyToTag (styleElement, obj) {
 /* 6 */
 /***/ (function(module, exports) {
 
-module.exports = require("Vue");
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || new Function("return this")();
+} catch (e) {
+	// This works if the window reference is available
+	if (typeof window === "object") g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
 
 /***/ }),
 /* 7 */
@@ -1424,7 +1444,7 @@ var index = (function () {
 
 /* harmony default export */ __webpack_exports__["a"] = (index);
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(12)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(6)))
 
 /***/ }),
 /* 8 */
@@ -1455,13 +1475,61 @@ exports.push([module.i, "\n.gantt-elastic__chart-row-text-content--html a {\n  c
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* WEBPACK VAR INJECTION */(function(global) {/* unused harmony export insertNodeAt */
+/* unused harmony export camelize */
+/* unused harmony export console */
+/* unused harmony export removeNode */
+function getConsole() {
+  if (typeof window !== "undefined") {
+    return window.console;
+  }
+  return global.console;
+}
+const console = getConsole();
+
+function cached(fn) {
+  const cache = Object.create(null);
+  return function cachedFn(str) {
+    const hit = cache[str];
+    return hit || (cache[str] = fn(str));
+  };
+}
+
+const regex = /-(\w)/g;
+const camelize = cached(str =>
+  str.replace(regex, (_, c) => (c ? c.toUpperCase() : ""))
+);
+
+function removeNode(node) {
+  if (node.parentElement !== null) {
+    node.parentElement.removeChild(node);
+  }
+}
+
+function insertNodeAt(fatherNode, node, position) {
+  const refNode =
+    position === 0
+      ? fatherNode.children[0]
+      : fatherNode.children[position - 1].nextSibling;
+  fatherNode.insertBefore(node, refNode);
+}
+
+
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(6)))
+
+/***/ }),
+/* 11 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 /* harmony import */ var _node_modules_vue_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_Resize_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 /* harmony import */ var _node_modules_vue_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_Resize_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_vue_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_Resize_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
 /* unused harmony reexport * */
  /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_vue_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_Resize_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(4)(false);
@@ -1472,32 +1540,6 @@ exports = module.exports = __webpack_require__(4)(false);
 exports.push([module.i, "\n.gantt-schedule-timeline-calendar__chart-timeline-items-row-item-resizer {\n  touch-action: none;\n  width: 20px;\n  height: 100%;\n  background: rgba(255, 255, 255, 0);\n  cursor: ew-resize;\n  flex-shrink: 0;\n  will-change: visibility;\n}\n", ""]);
 
 // exports
-
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || new Function("return this")();
-} catch (e) {
-	// This works if the window reference is available
-	if (typeof window === "object") g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
 
 
 /***/ }),
@@ -1542,7 +1584,9 @@ var render = function() {
     [
       _vm._t("header"),
       _vm._v(" "),
-      _c("main-view", { ref: "mainView" }),
+      _vm.tasks && _vm.tasks.length > 0
+        ? _c("main-view", { ref: "mainView" })
+        : [_vm._t("nodata")],
       _vm._v(" "),
       _vm._t("footer")
     ],
@@ -1554,10 +1598,6 @@ render._withStripped = true
 
 
 // CONCATENATED MODULE: ./src/GanttElastic.vue?vue&type=template&id=02c6304c&
-
-// EXTERNAL MODULE: external "Vue"
-var external_Vue_ = __webpack_require__(6);
-var external_Vue_default = /*#__PURE__*/__webpack_require__.n(external_Vue_);
 
 // EXTERNAL MODULE: ./node_modules/dayjs/dayjs.min.js
 var dayjs_min = __webpack_require__(0);
@@ -1655,6 +1695,10 @@ var MainViewvue_type_template_id_0bc4212e_render = function() {
                         wheel: function($event) {
                           $event.preventDefault()
                           return _vm.chartWheel($event)
+                        },
+                        contextmenu: function($event) {
+                          $event.preventDefault()
+                          return _vm.chartContextMenu($event)
                         }
                       }
                     },
@@ -2520,6 +2564,7 @@ var ItemColumnvue_type_template_id_cb5a6c96_render = function() {
                     {
                       staticClass: "gantt-elastic__task-list-item-value",
                       style: _vm.valueStyle,
+                      attrs: { title: _vm.title, title: "TEST" },
                       on: {
                         click: function($event) {
                           return _vm.emitEvent("click", $event)
@@ -2561,6 +2606,7 @@ var ItemColumnvue_type_template_id_cb5a6c96_render = function() {
                 : _c("div", {
                     staticClass: "gantt-elastic__task-list-item-value",
                     style: _vm.valueStyle,
+                    attrs: { title: _vm.title },
                     domProps: { innerHTML: _vm._s(_vm.value) },
                     on: {
                       click: function($event) {
@@ -2666,6 +2712,10 @@ ItemColumnvue_type_template_id_cb5a6c96_render._withStripped = true
 //
 //
 //
+//
+//
+//
+//
 
 /* harmony default export */ var ItemColumnvue_type_script_lang_js_ = ({
   name: 'ItemColumn',
@@ -2683,9 +2733,9 @@ ItemColumnvue_type_template_id_cb5a6c96_render._withStripped = true
      */
     emitEvent(eventName, event) {
       if (typeof this.column.events !== 'undefined' && typeof this.column.events[eventName] === 'function') {
-        this.column.events[eventName]({ event, data: this.task, column: this.column });
+        this.column.events[eventName]({event, data: this.task, column: this.column});
       }
-      this.root.$emit(`taskList-${this.task.type}-${eventName}`, { event, data: this.task, column: this.column });
+      this.root.$emit(`taskList-${this.task.type}-${eventName}`, {event, data: this.task, column: this.column});
     }
   },
   computed: {
@@ -2713,6 +2763,13 @@ ItemColumnvue_type_template_id_cb5a6c96_render._withStripped = true
       return this.task[this.column.value];
     },
 
+    title() {
+      if (typeof this.column.title === 'function') {
+        return this.column.title(this.task);
+      }
+      return this.task[this.column.title];
+    },
+
     itemColumnStyle() {
       return {
         ...this.root.style['task-list-item-column'],
@@ -2737,7 +2794,7 @@ ItemColumnvue_type_template_id_cb5a6c96_render._withStripped = true
     },
 
     valueStyle() {
-      return { ...this.root.style['task-list-item-value'], ...this.column.style['task-list-item-value'] };
+      return {...this.root.style['task-list-item-value'], ...this.column.style['task-list-item-value']};
     }
   }
 });
@@ -2995,39 +3052,40 @@ var Chartvue_type_template_id_67c3f5cd_render = function() {
                       _vm._v(" "),
                       _c("grid"),
                       _vm._v(" "),
-                      _c("dependency-lines", {
-                        attrs: { tasks: _vm.root.visibleTasks }
-                      }),
-                      _vm._v(" "),
-                      _vm._l(_vm.root.visibleTasks, function(task) {
-                        return _c(
-                          "g",
-                          {
-                            key: task.id,
-                            staticClass: "gantt-elastic__chart-row-wrapper",
-                            style: Object.assign(
-                              {},
-                              _vm.root.style["chart-row-wrapper"]
-                            ),
-                            attrs: { task: task }
-                          },
-                          [
-                            _c(task.type, {
-                              tag: "component",
+                      _vm._l(
+                        _vm.root.visibleTasks.filter(function(t) {
+                          return t.start && t.x
+                        }),
+                        function(task) {
+                          return _c(
+                            "g",
+                            {
+                              key: task.id,
+                              staticClass: "gantt-elastic__chart-row-wrapper",
+                              style: Object.assign(
+                                {},
+                                _vm.root.style["chart-row-wrapper"]
+                              ),
                               attrs: { task: task }
-                            }),
-                            _vm._v(" "),
-                            _vm._l(task.childElements, function(childTask) {
-                              return _c(childTask.type, {
-                                key: childTask.id,
+                            },
+                            [
+                              _c(task.type, {
                                 tag: "component",
-                                attrs: { task: childTask }
+                                attrs: { task: task }
+                              }),
+                              _vm._v(" "),
+                              _vm._l(task.childElements, function(childTask) {
+                                return _c(childTask.type, {
+                                  key: childTask.id,
+                                  tag: "component",
+                                  attrs: { task: childTask }
+                                })
                               })
-                            })
-                          ],
-                          2
-                        )
-                      })
+                            ],
+                            2
+                          )
+                        }
+                      )
                     ],
                     2
                   )
@@ -3235,6 +3293,7 @@ Gridvue_type_template_id_2bf979a7_render._withStripped = true
       let lines = [];
       const state = this.root.state.options;
       let tasks = this.root.visibleTasks;
+
       for (let index = 0, len = tasks.length; index <= len; index++) {
         const y =
           index * (state.row.height + state.chart.grid.horizontal.gap * 2) +
@@ -4384,7 +4443,7 @@ var Textvue_type_template_id_459c2fe4_render = function() {
       ),
       attrs: {
         x: _vm.task.x,
-        y: _vm.task.y - _vm.root.state.options.chart.grid.horizontal.gap,
+        y: _vm.task.y,
         width: _vm.getWidth,
         height: _vm.getHeight
       }
@@ -4415,7 +4474,7 @@ var Textvue_type_template_id_459c2fe4_render = function() {
                         _vm.contentStyle
                       )
                     },
-                    [_c("div", [_vm._v(_vm._s(_vm.task.label))])]
+                    [_c("div", [_vm._v(_vm._s(_vm.task.timelinelabel))])]
                   )
                 : _vm._e(),
               _vm._v(" "),
@@ -4429,7 +4488,7 @@ var Textvue_type_template_id_459c2fe4_render = function() {
                       _vm.root.style["chart-row-text-content--html"],
                       _vm.contentStyle
                     ),
-                    domProps: { innerHTML: _vm._s(_vm.task.label) }
+                    domProps: { innerHTML: _vm._s(_vm.task.timelinelabel) }
                   })
                 : _vm._e()
             ]
@@ -4517,7 +4576,7 @@ Textvue_type_template_id_459c2fe4_render._withStripped = true
     getWidth() {
       const textStyle = this.root.style['chart-row-text'];
       this.root.state.ctx.font = `${textStyle['font-weight']} ${textStyle['font-size']} ${textStyle['font-family']}`;
-      const textWidth = this.root.state.ctx.measureText(this.task.label).width;
+      const textWidth = (this.root.state.ctx.measureText(this.task.timelinelabel).width * 2);
       return textWidth + this.root.state.options.chart.text.xPadding * 2;
     },
 
@@ -4527,7 +4586,7 @@ Textvue_type_template_id_459c2fe4_render._withStripped = true
      * @returns {number}
      */
     getHeight() {
-      return this.task.height + this.root.state.options.chart.grid.horizontal.gap * 2;
+      return this.task.height// + this.root.state.options.chart.grid.horizontal.gap * 2;
     },
 
     /**
@@ -4826,6 +4885,9 @@ var ProgressBar_component = normalizeComponent(
 if (false) { var ProgressBar_api; }
 ProgressBar_component.options.__file = "src/components/Chart/ProgressBar.vue"
 /* harmony default export */ var ProgressBar = (ProgressBar_component.exports);
+// EXTERNAL MODULE: /Users/Tobi/Documents/Projects/ENATEK/App/node_modules/vuedraggable/src/util/helper.js
+var helper = __webpack_require__(10);
+
 // CONCATENATED MODULE: ./src/components/Chart/Row/Task.mixin.js
 /**
  * @fileoverview Task mixin
@@ -4833,6 +4895,7 @@ ProgressBar_component.options.__file = "src/components/Chart/ProgressBar.vue"
  * @author Rafal Pospiech <neuronet.io@gmail.com>
  * @package GanttElastic
  */
+
 
 /* harmony default export */ var Task_mixin = ({
   data() {
@@ -4848,8 +4911,9 @@ ProgressBar_component.options.__file = "src/components/Chart/ProgressBar.vue"
         positiveX: 0,
         positiveY: 0,
         currentX: 0,
-        currentY: 0
-      }
+        currentY: 0,
+        offsetX: 0
+      },
     };
   },
   computed: {
@@ -4894,14 +4958,18 @@ ProgressBar_component.options.__file = "src/components/Chart/ProgressBar.vue"
         this[eventName](event);
       }
 
-      if (!this.root.state.options.scroll.scrolling) {
+
+      //this.root.$emit(`chart-${this.task.type}-${eventName}`, {event, data: this.task});
+      if (!this.root.state.options.movingTask) {
         this.root.$emit(`chart-${this.task.type}-${eventName}`, {event, data: this.task});
       }
     },
     touchstart(ev) {
+      //return;
       this.mousedown(ev);
     },
     mousedown(ev) {
+      //return;
       if (typeof ev.touches !== 'undefined') {
         this.mousePos.x = this.mousePos.lastX = ev.touches[0].screenX;
         this.mousePos.y = this.mousePos.lastY = ev.touches[0].screenY;
@@ -4910,46 +4978,123 @@ ProgressBar_component.options.__file = "src/components/Chart/ProgressBar.vue"
         this.mousePos.currentX = this.task.x;
         this.mousePos.currentY = this.task.y;
       }
-      this.root.state.options.scroll.scrolling = false;
 
-      if (+ev.target.dataset.resize) {
+      if (ev.button !== 0) {
+        return
+      }
+
+      if (!this.root.isMoveble(this.task)) {
+        return;
+      }
+
+      this.root.state.options.scroll.scrolling = false;
+      this.root.state.options.movingTask = true;
+      this.task.isScrolling = true;
+      this.offsetX = ev.layerX - this.task.x;
+      this.root.state.options.movingData.offset = ev.layerX - this.task.x;
+      /*if (+ev.target.dataset.resize) {
         this.task.isResize = true;
       } else {
         this.task.isScrolling = true;
-      }
+      }*/
 
     },
     mouseup(ev) {
-      if (!this.task.isScrolling && !this.task.isResize) {
+      //return;
+      if (!this.root.state.options.movingTask || !this.task.isScrolling) {
         return;
       }
+
+      ev.preventDefault();
+      ev.stopImmediatePropagation();
+      ev.stopPropagation();
+
+      this.root.state.options.movingTask = false;
+      this.root.state.options.scroll.scrolling = false;
+      this.root.state.options.movingData.offset = 0;
+
       this.task.isScrolling = false;
       this.task.isResize = false;
       const oldTime = new Date(this.task.start);
-      const time = Math.round((this.root.pixelOffsetXToTime(this.task.x)));
+
+      const pixelToCaclulateTime = this.task.fullDay ? this.task.x + (this.task.width / 2) : this.task.x;
+      const time = Math.round((this.root.pixelOffsetXToTime(pixelToCaclulateTime)));
       const newTime = new Date(time);
-      newTime.setHours(oldTime.getHours());
-      newTime.setMinutes(oldTime.getMinutes());
-      newTime.setSeconds(oldTime.getSeconds());
-      newTime.setMilliseconds(0);
-      this.task.start = +newTime;
-      this.task.x = this.root.timeToPixelOffsetX(this.task.start);
+
+      if (!this.task.changedX) {
+        return; // no change
+      }
+
+      this.task.start = newTime;
+
+      if (this.task.fullDay) {
+        this.task.start.setHours(0, 0, 0, 0);
+        this.task.end = new Date(this.task.start);
+        this.task.end.setHours(23, 59, 59, 59);
+      } else {
+        this.task.end = new Date(+this.task.start + this.task.duration);
+      }
+
+      this.task.end = this.task.end.toISOString()
+      const newx = this.root.timeToPixelOffsetX(this.task.start);
+      this.task.start = newTime.toISOString()
+
+      if (this.task.changedX) {
+        this.task.x = newx;
+        this.task.changedX = true;
+        this.root.$emit(`task-changed-start`, this.task);
+      } else {
+        this.task.changedX = false;
+      }
     },
     touchend(ev) {
-      this.mouseup(ev);
-    },
-    mouseout(ev) {
       //this.mouseup(ev);
     },
-    mousemove(ev) {
-      if ((!this.task.isScrolling && !this.task.isResize) || !this.root.isMoveble(this.task)) {
+    mouseout(ev) {
+
+      if (
+        (!this.task.isScrolling && !this.task.isResize) ||
+        !this.root.isMoveble(this.task) ||
+        !this.root.state.options.movingTask
+      ) {
         return;
       }
 
       this.root.state.options.scroll.scrolling = false;
+
       ev.preventDefault();
       ev.stopImmediatePropagation();
       ev.stopPropagation();
+
+      this.offsetX = this.root.state.options.movingData.offset;//ev.layerX - this.task.x;
+    },
+    mousemove(ev) {
+      if (
+        (!this.task.isScrolling) ||
+        !this.root.isMoveble(this.task) ||
+        !this.root.state.options.movingTask
+      ) {
+        return;
+      }
+
+      ev.preventDefault();
+      ev.stopImmediatePropagation();
+      ev.stopPropagation();
+
+      this.offsetX = this.root.state.options.movingData.offset;
+      const newx = ev.layerX - (this.offsetX | 0);
+
+      if (Math.abs(newx - this.task.x) >= 1) {
+        this.task.x = newx;
+        this.task.changedX = true;
+      }
+
+      //console.log(`taskx: ${this.task.x}, offsetx: ${this.offsetX}`)
+      //console.log(ev);
+      return ev;
+      //ev.preventDefault();
+      //ev.stopImmediatePropagation();
+      //ev.stopPropagation();
       const touch = typeof ev.touches !== 'undefined';
       let movementX, movementY;
       if (touch) {
@@ -4963,28 +5108,31 @@ ProgressBar_component.options.__file = "src/components/Chart/ProgressBar.vue"
         movementX = ev.movementX;
         movementY = ev.movementY;
       }
-      //const horizontal = this.$refs.chartScrollContainerHorizontal;
-      //const vertical = this.$refs.chartScrollContainerVertical;
+
+      //console.log(movementX);
+      //console.log(this.mousePos)
+      const horizontal = this.$refs.chartScrollContainerHorizontal;
+
       let x = 0,
         y = 0;
       if (touch) {
         x = this.mousePos.currentX - movementX;// * this.root.state.options.scroll.dragXMoveMultiplier;
       } else {
-        x = this.task.x + movementX;// * this.root.state.options.scroll.dragXMoveMultiplier;
+        x = this.task.x + movementX;
       }
 
       if (this.task.isResize) {
         this.task.duration += parseInt((movementX) * (this.root.state.options.times.timePerPixel) - this.root.style['grid-line-vertical']['stroke-width']);
       } else {
-
         this.task.x = x;
       }
     },
     touchmove(ev) {
+      //return;
       this.mousemove(ev);
     }
   },
-  mounted() {
+  created() {
     document.addEventListener('mouseup', this.mouseup.bind(this));
     document.addEventListener('mousemove', this.mousemove.bind(this));
     document.addEventListener('touchmove', this.mousemove.bind(this));
@@ -5183,6 +5331,10 @@ var Milestonevue_type_template_id_3013006c_render = function() {
         },
         touchend: function($event) {
           return _vm.emitEvent("touchend", $event)
+        },
+        contextmenu: function($event) {
+          $event.preventDefault()
+          return _vm.emitEvent("contextmenu", $event)
         }
       }
     },
@@ -5240,7 +5392,9 @@ var Milestonevue_type_template_id_3013006c_render = function() {
         1
       ),
       _vm._v(" "),
-      _vm.root.state.options.chart.text.display && _vm.task.showLabel
+      _vm.root.state.options.chart.text.display &&
+      _vm.task.showLabel &&
+      _vm.root.isTaskVisible(_vm.task)
         ? _c("chart-text", { attrs: { task: _vm.task } })
         : _vm._e()
     ],
@@ -5401,7 +5555,7 @@ Resizevue_type_template_id_b9c8d456_render._withStripped = true
 // CONCATENATED MODULE: ./src/components/Chart/Resize.vue?vue&type=script&lang=js&
  /* harmony default export */ var Chart_Resizevue_type_script_lang_js_ = (Resizevue_type_script_lang_js_); 
 // EXTERNAL MODULE: ./src/components/Chart/Resize.vue?vue&type=style&index=0&lang=css&
-var Resizevue_type_style_index_0_lang_css_ = __webpack_require__(10);
+var Resizevue_type_style_index_0_lang_css_ = __webpack_require__(11);
 
 // CONCATENATED MODULE: ./src/components/Chart/Resize.vue
 
@@ -5508,6 +5662,8 @@ Resize_component.options.__file = "src/components/Chart/Resize.vue"
 //
 //
 //
+//
+//
 
 
 
@@ -5528,6 +5684,8 @@ Resize_component.options.__file = "src/components/Chart/Resize.vue"
   mixins: [Task_mixin],
   data() {
     return {};
+  },
+  created() {
   },
   computed: {
     /**
@@ -5552,11 +5710,11 @@ Resize_component.options.__file = "src/components/Chart/Resize.vue"
         offset = task.width / 2;
       }
       return `0,${fifty}
-      ${offset},0
-      ${task.width - offset},0
-      ${task.width},${fifty}
-      ${task.width - offset},${task.height}
-      ${offset},${task.height}`;
+        ${offset},0
+        ${task.width - offset},0
+        ${task.width},${fifty}
+        ${task.width - offset},${task.height}
+        ${offset},${task.height}`;
     }
   }
 });
@@ -6115,6 +6273,7 @@ Chart_component.options.__file = "src/components/Chart/Chart.vue"
 //
 //
 //
+//
 
 
 
@@ -6249,7 +6408,17 @@ let ignoreScrollEvents = false;
         this.mousePos.currentX = this.$refs.chartScrollContainerHorizontal.scrollLeft;
         this.mousePos.currentY = this.$refs.chartScrollContainerVertical.scrollTop;
       }
+
+      if (ev.button !== 0) {
+        return
+      }
+
       this.root.state.options.scroll.scrolling = true;
+    },
+
+
+    chartContextMenu(ev) {
+      this.root.$emit('chart-contextmenu', ev);
     },
 
     /**
@@ -6542,7 +6711,8 @@ function getStyle(fontSize = '12px', fontFamily = 'Arial, sans-serif') {
       'word-break': 'keep-all',
       'white-space': 'nowrap',
       color: '#606060',
-      background: '#FFFFFF'
+      background: '#FFFFFF',
+      cursor: 'pointer'
     },
     'grid-lines': {},
     'grid-line-horizontal': {
@@ -6585,7 +6755,7 @@ function getStyle(fontSize = '12px', fontFamily = 'Arial, sans-serif') {
       color: '#ffffff',
       height: '100%',
       "font-size": "0.8em",
-      display: 'inline-block'
+      /*display: 'inline-block'*/
     },
     /*'chart-row-text': {
       background: '#ffffffa0',
@@ -6599,7 +6769,8 @@ function getStyle(fontSize = '12px', fontFamily = 'Arial, sans-serif') {
     },*/
 
     'chart-row-text-content': {
-      padding: '0px 6px'
+      padding: '0px 6px',
+      'text-shadow': "0px 0px 10px #9d9d9d"
     },
     'chart-row-text-content--text': {},
     'chart-row-text-content--html': {
@@ -6691,15 +6862,19 @@ var ResizeObserver_es = __webpack_require__(7);
 //
 //
 //
+//
+//
+//
 
-
+//import VueInstance from 'vue';
 
 
 
 
 
 const ctx = document.createElement('canvas').getContext('2d');
-let VueInst = external_Vue_default.a;
+
+//let VueInst = VueInstance;
 
 function initVue() {
   if (typeof Vue !== 'undefined' && typeof VueInst === 'undefined') {
@@ -6707,7 +6882,7 @@ function initVue() {
   }
 }
 
-initVue();
+//initVue();
 
 let hourWidthCache = null;
 
@@ -6743,6 +6918,10 @@ function getOptions(userOptions) {
     outerHeight: 0,
     rowsHeight: 0,
     allVisibleTasksHeight: 0,
+    movingTask: false,
+    movingData: {
+      offset: 0,
+    },
     scroll: {
       scrolling: false,
       dragXMoveMultiplier: 3, //*
@@ -7172,6 +7351,10 @@ const GanttElastic = {
     mergeDeep,
     mergeDeepReactive,
 
+    setOptions(options) {
+      this.state.options = options
+    },
+
     /**
      * Calculate height of scrollbar in current browser
      *
@@ -7268,7 +7451,6 @@ const GanttElastic = {
           ...task,
           id: task[options.taskMapping.id],
           start: task[options.taskMapping.start],
-          label: task[options.taskMapping.label],
           duration: task[options.taskMapping.duration],
           progress: task[options.taskMapping.progress],
           type: task[options.taskMapping.type],
@@ -7477,6 +7659,7 @@ const GanttElastic = {
     },
 
     isMoveble(task) {
+      //return false;
       return task.parentId && task.parentId >= 0;
     },
 
@@ -7568,6 +7751,15 @@ const GanttElastic = {
       return visibleTasks.length * this.getTaskHeight();
     },
 
+
+    getTaskByY(y){
+      const height = this.getTaskHeight()
+
+      const taskIdx = Math.floor(+y/height);
+
+      return this.visibleTasks[taskIdx];
+    },
+
     /**
      * Convert time (in milliseconds) to pixel offset inside chart
      *
@@ -7652,6 +7844,9 @@ const GanttElastic = {
      * @param {int} time
      */
     scrollToTime(time) {
+      if (!this.state.refs.chartContainer) {
+        return;
+      }
       let pos = this.timeToPixelOffsetX(time);
       const chartContainerWidth = this.state.refs.chartContainer.clientWidth;
       pos = pos - chartContainerWidth / 2;
@@ -8095,7 +8290,7 @@ const GanttElastic = {
         task.width = 0;
       }
       task.height = this.state.options.row.height;
-      task.x = this.timeToPixelOffsetX(task.startTime);
+      task.x = task.startTime ? this.timeToPixelOffsetX(task.startTime) : 0;
       task.y =
         (this.state.options.row.height + this.state.options.chart.grid.horizontal.gap * 2) * index +
         this.state.options.chart.grid.horizontal.gap;
@@ -8105,6 +8300,7 @@ const GanttElastic = {
       return task;
     },
   },
+
 
   computed: {
     /**
@@ -8265,7 +8461,7 @@ const GanttElastic = {
    */
   updated() {
     this.$nextTick(() => {
-      this.$emit('updated');
+      this.$emit('updated', this.state);
     });
   },
 

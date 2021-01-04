@@ -904,10 +904,10 @@ const GanttElastic = {
     },
 
 
-    getTaskByY(y){
+    getTaskByY(y) {
       const height = this.getTaskHeight()
 
-      const taskIdx = Math.floor(+y/height);
+      const taskIdx = Math.floor(+y / height);
 
       return this.visibleTasks[taskIdx];
     },
@@ -1042,7 +1042,13 @@ const GanttElastic = {
      * Mouse wheel event handler
      */
     onWheelChart(ev) {
-      if (!ev.shiftKey && ev.deltaX === 0) {
+      if (ev.deltaY != 0) {
+        return;
+      } else {
+        ev.preventDefault();
+      }
+
+      if (!ev.shiftKey && +ev.deltaX === 0) {
         let top = this.state.options.scroll.top + ev.deltaY;
         const chartClientHeight = this.state.options.rowsHeight;
         const scrollHeight = this.state.refs.chartGraph.scrollHeight - chartClientHeight;

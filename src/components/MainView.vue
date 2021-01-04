@@ -49,7 +49,7 @@
             @touchend="chartMouseUp"
             @mousemove.prevent="chartMouseMove"
             @touchmove.prevent="chartMouseMove"
-            @wheel.prevent="chartWheel"
+            @wheel="chartWheel"
             @contextmenu.prevent="chartContextMenu"
           >
             <chart></chart>
