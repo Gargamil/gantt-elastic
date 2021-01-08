@@ -25,6 +25,7 @@
     @touchstart="emitEvent('touchstart', $event)"
     @touchmove="emitEvent('touchmove', $event)"
     @touchend="emitEvent('touchend', $event)"
+    @dblclick="emitEvent('dblclick', $event)"
     @contextmenu.prevent="emitEvent('contextmenu',$event)"
   >
     <!--<foreignObject
@@ -75,7 +76,7 @@
       <progress-bar :task="task" :clip-path="'url(#' + clipPathId + ')'"></progress-bar>
     </svg>
     <chart-text :task="task"
-                v-if="root.state.options.chart.text.display && task.showLabel && root.isTaskVisible(task)"></chart-text>
+                v-if="root.state.options.chart.text.display && task.showLabel"></chart-text>
     <!--<chart-resize-task :task="task" v-if="root.state.options.chart.text.display && task.showLabel"></chart-resize-task>-->
   </g>
 </template>

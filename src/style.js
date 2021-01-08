@@ -240,9 +240,9 @@ export default function getStyle(fontSize = '12px', fontFamily = 'Arial, sans-se
     'chart-row-text-wrapper': {},
     'chart-row-text': {
       background: 'inherit',
-      'border-radius': '10px',
-      'font-weight': 'normal',
-      color: '#ffffff',
+      'border-radius': '12px',
+      'font-weight': '500',
+      color: '#333',
       height: '100%',
       "font-size": "0.8em",
       /*display: 'inline-block'*/
@@ -260,7 +260,7 @@ export default function getStyle(fontSize = '12px', fontFamily = 'Arial, sans-se
 
     'chart-row-text-content': {
       padding: '0px 6px',
-      'text-shadow': "0px 0px 10px #9d9d9d"
+      'text-shadow': "rgb(255 255 255) 0px 0px 10px"
     },
     'chart-row-text-content--text': {},
     'chart-row-text-content--html': {

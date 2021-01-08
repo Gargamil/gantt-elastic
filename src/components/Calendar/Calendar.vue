@@ -8,6 +8,7 @@
 -->
 <template>
   <div
+
     class="gantt-elastic__calendar-wrapper"
     :style="{ ...root.style['calendar-wrapper'], width: root.state.options.width + 'px' }"
   >
@@ -155,7 +156,7 @@ export default {
         if (hoursCount.count === 0) {
           continue;
         }
-        const hours = { key: hourIndex + 'step', children: [] };
+        const hours = {key: hourIndex + 'step', children: []};
         const hourStep = 24 / hoursCount.count;
         const hourWidthPx = steps[hourIndex].width.px / hoursCount.count;
         for (let i = 0, len = hoursCount.count; i < len; i++) {
@@ -310,7 +311,7 @@ export default {
      *
      * @returns {int}
      */
-    calculateCalendarDimensions({ hours, days, months }) {
+    calculateCalendarDimensions({hours, days, months}) {
       let height = 0;
       if (this.root.state.options.calendar.hour.display && hours.length > 0) {
         height += this.root.state.options.calendar.hour.height;
@@ -330,7 +331,7 @@ export default {
       const hours = this.generateHours();
       const days = this.generateDays();
       const months = this.generateMonths();
-      const allDates = { hours, days, months };
+      const allDates = {hours, days, months};
       this.calculateCalendarDimensions(allDates);
       return allDates;
     }

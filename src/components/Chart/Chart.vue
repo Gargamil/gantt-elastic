@@ -9,6 +9,7 @@
 <template>
   <div class="gantt-elastic__chart" :style="{ ...root.style['chart'] }" ref="chart">
     <div
+      uk-sticky
       class="gantt-elastic__chart-calendar-container"
       ref="chartCalendarContainer"
       :style="{
@@ -75,51 +76,76 @@
 </template>
 
 <script>
-  import Grid from './Grid.vue';
-  import DaysHighlight from './DaysHighlight.vue';
-  import Calendar from '../Calendar/Calendar.vue';
-  import DependencyLines from './DependencyLines.vue';
-  import Task from './Row/Task.vue';
-  import Milestone from './Row/Milestone.vue';
-  import Project from './Row/Project.vue';
+import Grid from './Grid.vue';
+import DaysHighlight from './DaysHighlight.vue';
+import Calendar from '../Calendar/Calendar.vue';
+import DependencyLines from './DependencyLines.vue';
+import Task from './Row/Task.vue';
+import Milestone from './Row/Milestone.vue';
+import Project from './Row/Project.vue';
 
-  export default {
-    name: 'Chart',
-    components: {
-      Grid,
-      DependencyLines,
-      Calendar,
-      Task,
-      Milestone,
-      Project,
-      DaysHighlight
-    },
-    inject: ['root'],
-    data() {
-      return {
-        moving: false
-      };
-    },
+export default {
+  name: 'Chart',
+  components: {
+    Grid,
+    DependencyLines,
+    Calendar,
+    Task,
+    Milestone,
+    Project,
+    DaysHighlight
+  },
+  inject: ['root'],
+  data() {
+    return {
+      moving: false
+    };
+  },
+  /**
+   * Mounted
+   */
+  mounted() {
+    this.root.state.refs.chart = this.$refs.chart;
+    this.root.state.refs.chartCalendarContainer = this.$refs.chartCalendarContainer;
+    this.root.state.refs.chartGraphContainer = this.$refs.chartGraphContainer;
+    this.root.state.refs.chartGraph = this.$refs.chartGraph;
+    this.root.state.refs.chartGraphSvg = this.$refs.chartGraphSvg;
+  },
+
+  computed: {
     /**
-     * Mounted
+     * Get view box
+     *
+     * @returns {string}
      */
-    mounted() {
-      this.root.state.refs.chart = this.$refs.chart;
-      this.root.state.refs.chartCalendarContainer = this.$refs.chartCalendarContainer;
-      this.root.state.refs.chartGraphContainer = this.$refs.chartGraphContainer;
-      this.root.state.refs.chartGraph = this.$refs.chartGraph;
-      this.root.state.refs.chartGraphSvg = this.$refs.chartGraphSvg;
-    },
-
-    computed: {
-      /**
-       * Get view box
-       *
-       * @returns {string}
-       */
-      getViewBox() {
-        return `0 0 ${this.root.state.options.width} ${this.root.state.options.allVisibleTasksHeight}`;
-      }
+    getViewBox() {
+      return `0 0 ${this.root.state.options.width} ${this.root.state.options.allVisibleTasksHeight}`;
     }
-  };
+  }
+};
 </script>
+<style>
+div.inflow {
+  /*width: 200px;
+  height: 1000px;*/
+  border: 1px solid blue;
+  float: left;
+  position: relative;
+  /*margin-right: 100px;*/
+}
+
+div.positioner {
+  position: absolute;
+  right: 0;
+}
+
+/*may not be needed: see below*/
+div.fixed {
+  width: 80px;
+  border: 1px solid red;
+  height: 100px;
+  position: fixed;
+  top: 60px;
+  margin-left: 15px;
+}
+</style>
