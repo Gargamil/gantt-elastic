@@ -136,13 +136,14 @@ export default {
 
       this.task.start = newTime;
 
-      if (this.task.fullDay) {
-        this.task.start.setHours(0, 0, 0, 0);
-        this.task.end = new Date(this.task.start);
-        this.task.end.setHours(23, 59, 59, 59);
-      } else {
-        this.task.end = new Date(+this.task.start + this.task.duration);
-      }
+      //if (this.task.fullDay) {
+      this.task.start.setHours(0, 0, 0, 0);
+      //this.task.end = new Date(this.task.end ? this.task.end : this.task.start);
+      this.task.end = new Date(+this.task.start + this.task.duration);
+      this.task.end.setHours(23, 59, 59, 59);
+      //} else {
+      //  this.task.end = new Date(+this.task.start + this.task.duration);
+      //}
 
       this.task.end = this.task.end.toISOString()
       const newx = this.root.timeToPixelOffsetX(this.task.start);
