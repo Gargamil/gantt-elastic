@@ -20,6 +20,10 @@
 <script>
 //import VueInstance from 'vue';
 import dayjs from 'dayjs';
+import isoWeek from 'dayjs/plugin/isoWeek';
+
+dayjs.extend(isoWeek)
+
 import MainView from './components/MainView.vue';
 import getStyle from './style.js';
 import ResizeObserver from 'resize-observer-polyfill';
@@ -217,6 +221,26 @@ function getOptions(userOptions) {
           },
           short(date) {
             return date.format('DD');
+          }
+        }
+      },
+      week: {
+        height: 20, //*
+        display: true, //*
+        widths: [],
+        maxWidths: {short: 0, medium: 0, long: 0},
+        format: {
+          long(date) {
+            return date.isoWeek()
+            //return date.format('DD dddd');
+          },
+          medium(date) {
+            return date.isoWeek()
+            //return date.format('DD ddd');
+          },
+          short(date) {
+            return date.isoWeek()
+            //return date.format('MM');
           }
         }
       },
@@ -1234,7 +1258,9 @@ const GanttElastic = {
     computeCalendarWidths() {
       this.computeDayWidths();
       this.computeHourWidths();
+      this.computeWeekWidths();
       this.computeMonthWidths();
+
     },
 
     /**
@@ -1301,6 +1327,23 @@ const GanttElastic = {
       }
     },
 
+    weeksCount(fromTime, toTime) {
+      if (fromTime > toTime) {
+        return 0;
+      }
+      let currentMonth = dayjs(fromTime);
+      let previousMonth = currentMonth.clone();
+      let monthsCount = 1;
+      while (currentMonth.valueOf() <= toTime) {
+        currentMonth = currentMonth.add(1, 'day');
+        if (previousMonth.isoWeek() !== currentMonth.isoWeek()) {
+          monthsCount++;
+        }
+        previousMonth = currentMonth.clone();
+      }
+      return monthsCount;
+    },
+
     /**
      * Months count
      *
@@ -1328,6 +1371,38 @@ const GanttElastic = {
       return monthsCount;
     },
 
+    /**
+     * Compute month calendar columns widths basing on text widths
+     */
+    computeWeekWidths() {
+      const style = {...this.style['calendar-row-text'], ...this.style['calendar-row-text--week']};
+      this.state.ctx.font = style['font-size'] + ' ' + style['font-family'];
+      let maxWidths = this.state.options.calendar.week.maxWidths;
+      this.state.options.calendar.week.widths = [];
+      Object.keys(this.state.options.calendar.week.format).forEach(formatName => {
+        maxWidths[formatName] = 0;
+      });
+      const localeName = this.state.options.locale.name;
+      let currentDate = dayjs(this.state.options.times.firstTime).locale(localeName);
+      const monthsCount = this.weeksCount(this.state.options.times.firstTime, this.state.options.times.lastTime);
+      for (let month = 0; month < monthsCount; month++) {
+        const widths = {
+          month
+        };
+        Object.keys(this.state.options.calendar.week.format).forEach(formatName => {
+          widths[formatName] = this.state.ctx.measureText(
+            this.state.options.calendar.week.format[formatName](currentDate)
+          ).width;
+        });
+        this.state.options.calendar.week.widths.push(widths);
+        Object.keys(this.state.options.calendar.week.format).forEach(formatName => {
+          if (widths[formatName] > maxWidths[formatName]) {
+            maxWidths[formatName] = widths[formatName];
+          }
+        });
+        currentDate = currentDate.add(1, 'week');
+      }
+    },
     /**
      * Compute month calendar columns widths basing on text widths
      */
