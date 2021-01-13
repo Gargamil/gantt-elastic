@@ -41,7 +41,6 @@
           :style="{ ...root.style['chart-graph'], height: '100%' }"
         >
           <svg
-            @mouseout="root.$emit('chart-graph-mouseout')"
             class="gantt-elastic__chart-graph-svg"
             :style="{ ...root.style['chart-graph-svg'] }"
             ref="chartGraphSvg"

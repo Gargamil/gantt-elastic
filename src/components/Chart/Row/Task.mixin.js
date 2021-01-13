@@ -4,12 +4,12 @@
  * @author Rafal Pospiech <neuronet.io@gmail.com>
  * @package GanttElastic
  */
+import {console} from "vuedraggable/src/util/helper";
 
 export default {
   data() {
     return {
       defs: '',
-      mouseOutEvent: null,
       mousePos: {
         x: 0,
         y: 0,
@@ -96,12 +96,11 @@ export default {
         return;
       }
 
-      //this.mouseOutEvent = this.root.$once('chart-graph-mouseout', () => this.mouseup())
       this.root.state.options.scroll.scrolling = false;
       this.root.state.options.movingTask = true;
       this.task.isScrolling = true;
-      this.offsetX = ev.pageX - this.task.x; //layerX
-      this.root.state.options.movingData.offset = ev.pageX - this.task.x;
+      this.offsetX = ev.layerX - this.task.x;
+      this.root.state.options.movingData.offset = ev.layerX - this.task.x;
       /*if (+ev.target.dataset.resize) {
         this.task.isResize = true;
       } else {
@@ -114,11 +113,10 @@ export default {
       if (!this.root.state.options.movingTask || !this.task.isScrolling) {
         return;
       }
-      if (ev) {
-        ev.preventDefault();
-        ev.stopImmediatePropagation();
-        ev.stopPropagation();
-      }
+
+      ev.preventDefault();
+      ev.stopImmediatePropagation();
+      ev.stopPropagation();
 
       this.root.state.options.movingTask = false;
       this.root.state.options.scroll.scrolling = false;
@@ -194,13 +192,12 @@ export default {
       ev.stopPropagation();
 
       this.offsetX = this.root.state.options.movingData.offset;
-      const newx = ev.pageX - (this.offsetX | 0);
+      const newx = ev.layerX - (this.offsetX | 0);
 
       if (Math.abs(newx - this.task.x) >= 1) {
         this.task.x = newx;
         this.task.changedX = true;
       }
-
 
       //console.log(`taskx: ${this.task.x}, offsetx: ${this.offsetX}`)
       //console.log(ev);

@@ -41,9 +41,6 @@ export default function getStyle(fontSize = '12px', fontFamily = 'Arial, sans-se
     },
     'calendar-row--month': {},
     'calendar-row--day': {},
-    'calendar-row--week': {
-      "justify-content": "inherit"
-    },
     'calendar-row--hour': {
       'border-bottom': '1px solid #eee'
     },
@@ -52,7 +49,6 @@ export default function getStyle(fontSize = '12px', fontFamily = 'Arial, sans-se
       display: 'flex'
     },
     'calendar-row-rect--month': {},
-    'calendar-row-rect--week': {},
     'calendar-row-rect--day': {},
     'calendar-row-rect--hour': {},
     'calendar-row-rect-child': {
@@ -63,7 +59,6 @@ export default function getStyle(fontSize = '12px', fontFamily = 'Arial, sans-se
       position: 'relative'
     },
     'calendar-row-rect-child--month': {},
-    'calendar-row-rect-child--week': {'text-align': 'center'},
     'calendar-row-rect-child--day': {'text-align': 'center'},
     'calendar-row-rect-child--hour': {'text-align': 'center'},
     'calendar-row-text': {
@@ -74,7 +69,6 @@ export default function getStyle(fontSize = '12px', fontFamily = 'Arial, sans-se
       position: 'relative'
     },
     'calendar-row-text--month': {},
-    'calendar-row-text--week': {},
     'calendar-row-text--day': {},
     'calendar-row-text--hour': {},
     'task-list-wrapper': {},
