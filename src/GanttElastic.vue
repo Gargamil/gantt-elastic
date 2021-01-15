@@ -110,7 +110,7 @@ function getOptions(userOptions) {
       after: 1
     },
     times: {
-      timeScale: 60 * 1000,
+      timeScale: 60 * 24 * 1000,
       timeZoom: 17, //*
       timePerPixel: 0,
       firstTime: null,

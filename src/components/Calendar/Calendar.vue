@@ -94,28 +94,15 @@ export default {
       };
     },
 
-     howManyWeeksFit() {
-      const stroke = 1;
-      const additionalSpace = stroke + 2;
-      let fullWidth = this.root.state.options.width;
-      let formatNames = Object.keys(this.root.state.options.calendar.week.format);
-      for (let weeks = this.root.state.options.times.steps.length; weeks > 1; weeks = Math.ceil(weeks / 2)) {
-        for (let formatName of formatNames) {
-          if (
-            (this.root.state.options.calendar.week.maxWidths[formatName] + additionalSpace) * weeks <= fullWidth &&
-            weeks > 1
-          ) {
-            return {
-              count: weeks,
-              type: formatName
-            };
-          }
-        }
-      }
+    howManyWeeksFit() {
+      const currentMonth = dayjs(this.root.state.options.times.firstTime);
+
+      const lastTime = dayjs(this.root.state.options.times.lastTime);
+
       return {
-        count: 0,
-        type: ''
-      };
+        count: Math.ceil(lastTime.diff(currentMonth, 'week', true)) + 1,
+        type: 'long'
+      }
     },
 
 
@@ -131,8 +118,8 @@ export default {
       let formatNames = Object.keys(this.root.state.options.calendar.month.format);
       let currentMonth = dayjs(this.root.state.options.times.firstTime);
       let previousMonth = currentMonth.clone();
-      const lastTime = this.root.state.options.times.lastTime;
-      let monthsCount = this.root.monthsCount(
+      const lastTime = dayjs(this.root.state.options.times.lastTime);
+      /*let monthsCount = this.root.monthsCount(
         this.root.state.options.times.firstTime,
         this.root.state.options.times.lastTime
       );
@@ -158,6 +145,10 @@ export default {
             };
           }
         }
+      }*/
+      return {
+        count: Math.ceil(lastTime.diff(currentMonth, 'month', true)),
+        type: formatNames[0]
       }
       return {
         count: 0,
@@ -271,6 +262,60 @@ export default {
       }
       const steps = this.root.state.options.times.steps;
       const localeName = this.root.state.options.locale.name;
+      const weekStep = Math.ceil(steps.length / weeksCount.count);
+      let currentDate = dayjs(this.root.state.options.times.firstTime);
+
+      for (let weekIndex = 0, len = steps.length; weekIndex < len; weekIndex += weekStep) {
+        let weekWidthPx = 0;
+        let finalDate = dayjs(currentDate)
+          .startOf('week')
+          .add(1, 'week')
+
+        // day could be shorter (daylight saving time) so join widths and divide
+        for (let currentStep = 0; currentStep < weekStep; currentStep++) {
+          if (typeof steps[weekIndex + currentStep] !== 'undefined' && (steps[weekIndex + currentStep].time < finalDate.valueOf())) {
+            weekWidthPx += steps[weekIndex + currentStep].width.px;
+          } else {
+            break;
+          }
+        }
+        const date = dayjs(steps[weekIndex].time);
+        let textWidth = 0;
+        if (typeof this.root.state.options.calendar.week.widths[weekIndex] !== 'undefined') {
+          textWidth = this.root.state.options.calendar.week.widths[weekIndex][weeksCount.type];
+        }
+        weeks.push({
+          index: weekIndex,
+          key: steps[weekIndex].time + 'w',
+          x: 0,
+          y: this.root.state.options.calendar.month.height,
+          width: weekWidthPx,
+          textWidth,
+          height: this.root.state.options.calendar.day.height,
+          label: this.root.state.options.calendar.week.format[weeksCount.type](date.locale(localeName))
+        });
+        currentDate = currentDate.startOf('week').add(2, 'week').endOf('week');
+      }
+      weeks[weeks.length - 1].width = weeks[weeks.length - 2].width // damn fix of last element
+      return weeks.map(item => ({
+        key: item.key,
+        children: [item]
+      }));
+    },
+
+    generateWeeks_() {
+      console.time('weeks')
+      let weeks = [];
+      if (!this.root.state.options.calendar.week.display) {
+        return weeks;
+      }
+      const weeksCount = this.howManyWeeksFit();
+      if (weeksCount.count === 0) {
+        return weeks;
+      }
+
+
+      const localeName = this.root.state.options.locale.name;
       let formatNames = Object.keys(this.root.state.options.calendar.week.format);
       let currentDate = dayjs(this.root.state.options.times.firstTime);
       for (let weekIndex = 0; weekIndex < weeksCount.count; weekIndex++) {
@@ -289,6 +334,7 @@ export default {
             weekWidth += currentStep.width.px;
             if (currentStep.offset.px < weekOffset) {
               weekOffset = currentStep.offset.px;
+            } else {
             }
           }
         }
@@ -321,10 +367,15 @@ export default {
           currentDate = dayjs(this.root.state.options.times.lastTime);
         }
       }
-      return weeks.map(item => ({
+
+      const res = weeks.map(item => ({
         key: item.key,
         children: [item]
       }));
+
+      console.timeEnd('weeks')
+
+      return res;
     },
 
     /**
@@ -424,11 +475,11 @@ export default {
 
   computed: {
     dates() {
-      const hours = this.generateHours();
+      //const hours = this.generateHours();
       const days = this.generateDays();
       const weeks = this.generateWeeks();
       const months = this.generateMonths();
-      const allDates = {hours, days, months, weeks};
+      const allDates = {days, months, weeks};
       this.calculateCalendarDimensions(allDates);
       return allDates;
     }
