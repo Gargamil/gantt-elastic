@@ -18,7 +18,7 @@
     @mouseenter="emitEvent('mouseenter', $event)"
     @mouseover="emitEvent('mouseover', $event)"
     @mouseout="emitEvent('mouseout', $event)"
-    @mousemove="emitEvent('mousemove', $event)"
+    @mousemove.passive="emitEvent('mousemove', $event)"
     @mousedown="emitEvent('mousedown', $event)"
     @mouseup="emitEvent('mouseup', $event)"
     @mousewheel="emitEvent('mousewheel', $event)"

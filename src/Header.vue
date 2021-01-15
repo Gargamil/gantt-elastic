@@ -76,7 +76,7 @@
             :style="style['header-slider']"
             :process-style="style['header-slider--process']"
             :slider-style="style['header-slider--slider']"
-            v-model="height"
+            v-model.lazy="height"
             :max="100"
             :min="7"
             width="100px"
