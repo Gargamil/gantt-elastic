@@ -96,12 +96,26 @@ export default {
         return;
       }
 
-      //this.mouseOutEvent = this.root.$once('chart-graph-mouseout', () => this.mouseup())
       this.root.state.options.scroll.scrolling = false;
-      this.root.state.options.movingTask = true;
-      this.task.isScrolling = true;
       this.offsetX = ev.pageX - this.task.x; //layerX
-      this.root.state.options.movingData.offset = ev.pageX - this.task.x;
+      this.root.state.options.movingTask = true;
+
+      if (+ev.target.dataset.resize) {
+        this.root.state.options.resizeTask = true;
+        this.task.isResize = true;
+        this.task.resizeStart = +ev.target.dataset.isdirectionstart;
+        if (this.task.resizeStart) {
+          this.root.state.options.movingData.offset = ev.pageX - this.task.x;
+        } else {
+          this.root.state.options.movingData.offset = ev.pageX - (this.task.x + this.task.width);
+        }
+      } else {
+        this.root.state.options.movingTask = true;
+        this.task.isScrolling = true;
+        this.root.state.options.movingData.offset = ev.pageX - this.task.x;
+      }
+
+
       /*if (+ev.target.dataset.resize) {
         this.task.isResize = true;
       } else {
@@ -111,7 +125,7 @@ export default {
     },
     mouseup(ev) {
       //return;
-      if (!this.root.state.options.movingTask || !this.task.isScrolling) {
+      if (!this.root.state.options.movingTask || (!this.task.isScrolling && !this.task.isResize)) {
         return;
       }
       if (ev) {
@@ -120,13 +134,11 @@ export default {
         ev.stopPropagation();
       }
 
+
       this.root.state.options.movingTask = false;
       this.root.state.options.scroll.scrolling = false;
       this.root.state.options.movingData.offset = 0;
 
-      this.task.isScrolling = false;
-      this.task.isResize = false;
-      const oldTime = new Date(this.task.start);
 
       const pixelToCaclulateTime = this.task.fullDay ? this.task.x + (this.task.width / 2) : this.task.x;
       const time = Math.round((this.root.pixelOffsetXToTime(pixelToCaclulateTime)));
@@ -137,27 +149,35 @@ export default {
       }
 
       this.task.start = newTime;
-
-      //if (this.task.fullDay) {
       this.task.start.setHours(0, 0, 0, 0);
-      //this.task.end = new Date(this.task.end ? this.task.end : this.task.start);
-      this.task.end = new Date(+this.task.start + this.task.duration);
-      this.task.end.setHours(23, 59, 59, 59);
-      //} else {
-      //  this.task.end = new Date(+this.task.start + this.task.duration);
-      //}
+      this.task.startTime = +this.task.start;
 
+      if (this.task.isScrolling) {
+        this.task.end = new Date(+this.task.start + this.task.duration);
+      } else {
+        this.task.end = new Date(this.task.endTime)
+      }
+      this.task.end.setHours(23, 59, 59, 59);
+      this.task.endTime = +this.task.end;
       this.task.end = this.task.end.toISOString()
+
+
       const newx = this.root.timeToPixelOffsetX(this.task.start);
       this.task.start = newTime.toISOString()
 
       if (this.task.changedX) {
         this.task.x = newx;
+        if (this.task.isResize) {
+          this.task.duration = this.task.endTime - this.task.startTime;
+        }
         this.task.changedX = true;
         this.root.$emit(`task-changed-start`, this.task);
       } else {
         this.task.changedX = false;
       }
+
+      this.task.isScrolling = false;
+      this.task.isResize = false;
     },
     touchend(ev) {
       //this.mouseup(ev);
@@ -182,7 +202,7 @@ export default {
     },
     mousemove(ev) {
       if (
-        (!this.task.isScrolling) ||
+        (!this.task.isScrolling && !this.task.isResize) ||
         !this.root.isMoveble(this.task) ||
         !this.root.state.options.movingTask
       ) {
@@ -196,14 +216,28 @@ export default {
       this.offsetX = this.root.state.options.movingData.offset;
       const newx = ev.pageX - (this.offsetX | 0);
 
-      if (Math.abs(newx - this.task.x) >= 1) {
+      if (this.task.isScrolling && Math.abs(newx - this.task.x) >= 1) {
         this.task.x = newx;
         this.task.changedX = true;
+      } else if (this.task.isResize) {
+
+
+        this.task.changedX = true;
+
+        const newStartOrEnd = Math.round((this.root.pixelOffsetXToTime(newx)));
+
+        if (this.task.resizeStart) {
+          this.task.startTime = +newStartOrEnd;
+        } else {
+          this.task.endTime = +newStartOrEnd;
+        }
+
+        this.task.duration = this.task.endTime - this.task.startTime;
+
+
       }
 
 
-      //console.log(`taskx: ${this.task.x}, offsetx: ${this.offsetX}`)
-      //console.log(ev);
       return ev;
       //ev.preventDefault();
       //ev.stopImmediatePropagation();
@@ -250,5 +284,9 @@ export default {
     document.addEventListener('mousemove', this.mousemove.bind(this));
     document.addEventListener('touchmove', this.mousemove.bind(this));
     document.addEventListener('touchend', this.mouseup.bind(this));
+
+    // add resize listener
+
+
   }
 };

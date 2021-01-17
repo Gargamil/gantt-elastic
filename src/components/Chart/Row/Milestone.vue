@@ -28,6 +28,7 @@
     @dblclick="emitEvent('dblclick', $event)"
     @contextmenu.prevent="emitEvent('contextmenu',$event)"
   >
+
     <!--<foreignObject
       class="gantt-elastic__chart-expander gantt-elastic__chart-expander--milestone"
       :style="{
@@ -77,7 +78,20 @@
     </svg>
     <chart-text :task="task"
                 v-if="root.state.options.chart.text.display && task.showLabel"></chart-text>
-    <!--<chart-resize-task :task="task" v-if="root.state.options.chart.text.display && task.showLabel"></chart-resize-task>-->
+    <chart-resize-task
+      v-on:mousedown="emitEvent('resize-mousedown',$event);"
+      v-on:mousemove="emitEvent('resize-mousemove',$event);"
+      v-on:mouseup="emitEvent('resize-mouseup',$event);"
+
+      :start="true"
+      :task="task"
+      v-if="root.state.options.chart.text.display && task.showLabel"></chart-resize-task>
+    <chart-resize-task
+      v-on:mousedown="emitEvent('resize-mousedown',$event);"
+      v-on:mousemove="emitEvent('resize-mousemove',$event);"
+      v-on:mouseup="emitEvent('resize-mouseup',$event);"
+      :task="task" v-if="root.state.options.chart.text.display && task.showLabel"></chart-resize-task>
+
   </g>
 </template>
 
@@ -103,6 +117,11 @@ export default {
     return {};
   },
   created() {
+  },
+  methods: {
+    event($ev) {
+      console.log($ev);
+    }
   },
   computed: {
     /**

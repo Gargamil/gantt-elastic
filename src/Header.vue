@@ -54,7 +54,7 @@
             :style="style['header-slider']"
             :process-style="style['header-slider--process']"
             :slider-style="style['header-slider--slider']"
-            v-model="scale"
+            v-model.lazy="scale"
             :max="24"
             :min="2"
             width="100px"
